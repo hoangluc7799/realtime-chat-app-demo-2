@@ -1,0 +1,149 @@
+/* Custom CSS bọc ngoài Bootstrap để giao diện mượt mà và đồng bộ hơn */
+
+:root {
+    --bs-primary: #5267e8;
+    --bs-primary-rgb: 82, 103, 232;
+}
+
+body {
+    background-color: #f3f5f9 !important;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Auth Tabs Active State */
+.auth-tabs .nav-link {
+    color: #687386;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+.auth-tabs .nav-link.active {
+    color: #4053ce !important;
+    background: white !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Room Item List Customization */
+.room-item {
+    width: 100%;
+    padding: 12px 14px;
+    text-align: left;
+    color: #394355;
+    background: white;
+    border: 1px solid #e8ebf2;
+    border-radius: 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+.room-item:hover {
+    border-color: #aab4f7;
+    background: #f6f7ff;
+}
+
+.room-item.active {
+    border-color: #5267e8;
+    background: #eef0ff;
+}
+
+.room-item-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.room-item-description {
+    display: block;
+    margin-top: 3px;
+    color: #8992a2;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+/* Chat Message Bubbles */
+.message-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 75%;
+    align-self: flex-start;
+}
+
+.message-item.mine {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.message-meta {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+    color: #8992a2;
+    font-size: 11px;
+}
+
+.message-sender {
+    color: #5267e8;
+    font-weight: 700;
+}
+
+.message-bubble {
+    padding: 10px 14px;
+    color: #30394b;
+    background: #f0f2f7;
+    border-radius: 4px 14px 14px 14px;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.message-item.mine .message-bubble {
+    color: white;
+    background: #5267e8;
+    border-radius: 14px 4px 14px 14px;
+}
+
+/* Connection Status indicator colors */
+.connection-status.connected {
+    color: #198754 !important;
+}
+
+.connection-status.disconnected {
+    color: #dc3545 !important;
+}
+
+/* System Notice */
+.system-notice {
+    align-self: center;
+    max-width: 90%;
+    padding: 6px 12px;
+    color: #778195;
+    background: #f5f6fa;
+    border-radius: 20px;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d7dce5;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #b4bccb;
+}
