@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realtime Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="bg-light min-vh-100 d-flex flex-column justify-content-center align-items: center py-4">
+
+    <div class="container py-2" style="max-width: 1300px;">
+
+        <!-- Khu vực đăng nhập / đăng ký -->
+        <section id="authSection" class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow-lg border-0 rounded-4 p-4 p-sm-5 bg-white">
+                    
+                    <div class="brand text-center mb-4">
+                        <h1 class="h3 fw-bold text-dark">Realtime Chat</h1>
+                        <p class="text-muted small">Trò chuyện cùng mọi người một cách nhanh chóng</p>
+                    </div>
+
+                    <div class="auth-tabs nav nav-pills nav-fill bg-light p-1 rounded-3 mb-4">
+                        <button id="showLoginBtn" class="nav-link active fw-semibold py-2">
+                            Đăng nhập
+                        </button>
+                        <button id="showRegisterBtn" class="nav-link fw-semibold py-2">
+                            Đăng ký
+                        </button>
+                    </div>
+
+                    <!-- Form Đăng nhập -->
+                    <form id="loginForm" class="needs-validation" novalidate>
+                        <h2 class="h5 fw-bold mb-3 text-dark">Chào mừng trở lại!</h2>
+
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label fw-semibold">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
+                                <input type="email" id="loginEmail" class="form-control border-start-0 ps-0 shadow-none" placeholder="name@example.com" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="loginPassword" class="form-label fw-semibold">Mật khẩu</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                                <input type="password" id="loginPassword" class="form-control border-start-0 ps-0 shadow-none" placeholder="Nhập mật khẩu" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold rounded-3 shadow-sm">
+                            Đăng nhập
+                        </button>
+                    </form>
+
+                    <!-- Form Đăng ký -->
+                    <form id="registerForm" class="hidden needs-validation" novalidate>
+                        <h2 class="h5 fw-bold mb-3 text-dark">Tạo tài khoản mới</h2>
+
+                        <div class="mb-3">
+                            <label for="registerUsername" class="form-label fw-semibold">Tên người dùng</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                                <input type="text" id="registerUsername" class="form-control border-start-0 ps-0 shadow-none" placeholder="nguyenvana" minlength="3" maxlength="30" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label fw-semibold">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
+                                <input type="email" id="registerEmail" class="form-control border-start-0 ps-0 shadow-none" placeholder="name@example.com" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="registerPassword" class="form-label fw-semibold">Mật khẩu</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                                <input type="password" id="registerPassword" class="form-control border-start-0 ps-0 shadow-none" placeholder="Ít nhất 8 ký tự" minlength="8" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold rounded-3 shadow-sm">
+                            Tạo tài khoản
+                        </button>
+                    </form>
+
+                    <p id="authMessage" class="message text-center mt-3 mb-0 small"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Khu vực chat -->
+        <section id="chatSection" class="chat-layout row g-0 shadow-lg rounded-4 overflow-hidden bg-white hidden border">
+
+            <!-- Sidebar -->
+            <aside class="col-lg-4 sidebar d-flex flex-column border-end bg-white">
+                <div class="sidebar-header p-4 border-bottom d-flex align-items-center justify-content-between bg-body-tertiary">
+                    <div>
+                        <h2 class="h5 fw-bold mb-1 text-dark">Chat Rooms</h2>
+                        <p class="text-muted small mb-0">Xin chào, <strong id="currentUsername" class="text-primary"></strong></p>
+                    </div>
+                    <button id="logoutBtn" class="btn btn-outline-danger btn-sm px-3 rounded-pill fw-semibold">
+                        <i class="bi bi-box-arrow-right me-1"></i> Đăng xuất
+                    </button>
+                </div>
+
+                <div class="p-4 flex-grow-1 overflow-y-auto">
+                    <!-- Tạo phòng mới -->
+                    <div class="room-create mb-4">
+                        <h3 class="h6 fw-bold text-secondary mb-2"><i class="bi bi-plus-circle me-1"></i> Tạo phòng mới</h3>
+                        <form id="createRoomForm" class="d-flex flex-column gap-2">
+                            <input type="text" id="roomName" class="form-control form-control-sm shadow-none" placeholder="Tên phòng" minlength="2" maxlength="50" required>
+                            <input type="text" id="roomDescription" class="form-control form-control-sm shadow-none" placeholder="Mô tả phòng (không bắt buộc)" maxlength="200">
+                            <button type="submit" class="btn btn-primary btn-sm fw-semibold shadow-sm">
+                                + Tạo phòng
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Tham gia phòng -->
+                    <div class="room-join mb-4">
+                        <h3 class="h6 fw-bold text-secondary mb-2"><i class="bi bi-door-open me-1"></i> Tham gia phòng</h3>
+                        <form id="joinRoomForm" class="input-group input-group-sm">
+                            <input type="text" id="joinRoomId" class="form-control shadow-none" placeholder="Nhập ID phòng" required>
+                            <button type="submit" class="btn btn-outline-primary fw-semibold">
+                                Tham gia
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Danh sách phòng -->
+                    <div class="room-list-section">
+                        <h3 class="h6 fw-bold text-secondary mb-2"><i class="bi bi-chat-square-text me-1"></i> Phòng của tôi</h3>
+                        <div id="roomList" class="room-list d-flex flex-column gap-2">
+                            <p class="muted small text-muted">Đang tải danh sách phòng...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="padding: 10px" id="roomMessage" class="message px-4 mb-3 small"></p>
+            </aside>
+
+            <!-- Main chat -->
+            <main class="col-lg-8 chat-main d-flex flex-column bg-white">
+                <header class="chat-header p-4 border-bottom d-flex align-items-center justify-content-between bg-body-tertiary">
+                    <div>
+                        <h2 id="roomTitle" class="h5 fw-bold mb-1 text-dark">Chọn một phòng chat</h2>
+                        <p id="roomDescriptionText" class="text-muted small mb-0">
+                            Chọn phòng ở danh sách bên trái để bắt đầu.
+                        </p>
+                    </div>
+
+                    <button id="copyRoomIdBtn" class="btn btn-outline-secondary btn-sm rounded-pill fw-semibold hidden">
+                        <i class="bi bi-clipboard me-1"></i> Sao chép ID phòng
+                    </button>
+                </header>
+
+                <div style="margin: 15px;" id="connectionStatus" class="connection-status px-4 py-2 bg-light border-bottom small text-muted fw-medium">
+                    <i class="bi bi-circle-fill small text-warning me-1"></i> Chưa kết nối
+                </div>
+
+                <div id="messageList" class="message-list p-4 flex-grow-1 overflow-y-auto d-flex flex-column gap-3" style="max-height: 55vh; min-height: 350px;">
+                    <div class="empty-state my-auto text-center py-5">
+                        <div class="empty-icon display-4 text-muted mb-3"><i class="bi bi-chat-dots"></i></div>
+                        <h3 class="h5 fw-bold text-dark">Chưa có phòng nào được chọn</h3>
+                        <p class="text-muted small">Hãy tạo phòng hoặc chọn một phòng từ danh sách để bắt đầu trò chuyện.</p>
+                    </div>
+                </div>
+
+                <form id="messageForm" class="message-form p-3 border-top d-flex gap-2 bg-white align-items-center">
+                    <input type="text" id="messageInput" class="form-control shadow-none rounded-pill px-3 py-2" placeholder="Nhập tin nhắn..." maxlength="2000" autocomplete="off" disabled required>
+                    <button type="submit" id="sendMessageBtn" class="btn btn-primary rounded-pill px-4 fw-semibold shadow-sm" disabled>
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </form>
+            </main>
+        </section>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/code.js"></script>
+</body>
+</html>
