@@ -1,0 +1,188 @@
+
+<div class="container py-4">
+
+    <h2 class="mb-4">Quản lý tài khoản</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            {{!-- THÔNG TIN CÁ NHÂN --}}
+            <div class="card shadow-sm mb-4">
+
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-circle me-2"></i>
+                        Thông tin cá nhân
+                    </h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form action="/profile/update" method="POST">
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">
+                                Username
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="username"
+                                name="username"
+                                value="{{user.username}}"
+                                minlength="3"
+                                maxlength="30"
+                                required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                id="email"
+                                name="email"
+                                value="{{user.email}}"
+                                required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">
+                                Họ và tên
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="fullName"
+                                name="fullName"
+                                value="{{user.fullName}}"
+                                placeholder="Nhập họ và tên"
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Vai trò</label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                value="{{user.role}}"
+                                disabled
+                            >
+
+                            <small class="text-muted">
+                                Vai trò không thể tự thay đổi.
+                            </small>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>
+                                Lưu thông tin
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+
+            {{!-- ĐỔI MẬT KHẨU --}}
+            <div class="card shadow-sm mb-4">
+
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-key me-2"></i>
+                        Đổi mật khẩu
+                    </h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form action="/profile/change-password" method="POST">
+
+                        {{!-- MẬT KHẨU HIỆN TẠI --}}
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">
+                                Mật khẩu hiện tại
+                            </label>
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="currentPassword"
+                                name="currentPassword"
+                                placeholder="Nhập mật khẩu hiện tại"
+                                required
+                            >
+                        </div>
+
+                        {{!-- MẬT KHẨU MỚI --}}
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">
+                                Mật khẩu mới
+                            </label>
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="newPassword"
+                                name="newPassword"
+                                placeholder="Nhập mật khẩu mới"
+                                minlength="6"
+                                required
+                            >
+
+                            <small class="text-muted">
+                                Mật khẩu phải có ít nhất 6 ký tự.
+                            </small>
+                        </div>
+
+                        {{!-- XÁC NHẬN MẬT KHẨU --}}
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">
+                                Xác nhận mật khẩu mới
+                            </label>
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                placeholder="Nhập lại mật khẩu mới"
+                                minlength="6"
+                                required
+                            >
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-lock me-1"></i>
+                                Đổi mật khẩu
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="text-start">
+                <a href="/home" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Quay lại
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</div>

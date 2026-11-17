@@ -1,0 +1,176 @@
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h2>Xin chào, {{user.fullName}}</h2>
+        <p class="text-muted">Chào mừng bạn quay trở lại Todo App.</p>
+    </div>
+
+    <!-- TASK STATISTICS -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Tổng công việc</h6>
+                    <h3>{{totalTasks}}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Chưa thực hiện</h6>
+                    <h3>{{pendingTasks}}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Đang thực hiện</h6>
+                    <h3>{{inProgressTasks}}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Đã hoàn thành</h6>
+                    <h3>{{completedTasks}}</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CREATE TASK FORM -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">+ Thêm công việc mới</h5>
+        </div>
+
+        <div class="card-body">
+            <form action="/tasks" method="POST">
+
+                <div class="mb-3">
+                    <label class="form-label">Tiêu đề</label>
+                    <input
+                        type="text"
+                        name="title"
+                        class="form-control"
+                        placeholder="Nhập tên công việc"
+                        maxlength="150"
+                        required
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mô tả</label>
+                    <textarea
+                        name="description"
+                        class="form-control"
+                        rows="2"
+                        placeholder="Mô tả công việc..."
+                    ></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Mức độ ưu tiên</label>
+                        <select name="priority" class="form-select">
+                            <option value="low">Thấp</option>
+                            <option value="medium" selected>Trung bình</option>
+                            <option value="high">Cao</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Ngày hết hạn</label>
+                        <input
+                            type="date"
+                            name="dueDate"
+                            class="form-control"
+                        >
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Thêm công việc
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- TASK LIST -->
+    <h4 class="mb-3">Danh sách công việc</h4>
+
+    {{#if tasks.length}}
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Tiêu đề</th>
+                        <th>Mô tả</th>
+                        <th>Trạng thái</th>
+                        <th>Ưu tiên</th>
+                        <th>Ngày hết hạn</th>
+                        <th style="width: 150px">Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {{#each tasks}}
+                        <tr>
+                            <td>{{this.title}}</td>
+                            <td>{{this.description}}</td>
+                            <td>{{this.status}}</td>
+                            <td>{{this.priority}}</td>
+                            <td>{{this.dueDate}}</td>
+
+                            <td>
+                                <!-- EDIT -->
+                                <a
+                                    href="/tasks/{{this._id}}/edit"
+                                    class="btn btn-sm btn-warning mb-1"
+                                >
+                                    Sửa
+                                </a>
+
+                                <!-- DELETE -->
+                                <form
+                                    action="/tasks/{{this._id}}?_method=DELETE"
+                                    method="POST"
+                                    class="d-inline"
+                                    onsubmit="return confirm('Bạn có chắc muốn xóa công việc này?')"
+                                >
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-danger mb-1"
+                                    >
+                                        Xóa
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+
+            </table>
+        </div>
+
+    {{else}}
+
+        <div class="alert alert-info">
+            Bạn chưa có công việc nào. Hãy thêm công việc đầu tiên nhé!
+        </div>
+
+    {{/if}}
+
+</div>

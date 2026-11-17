@@ -1,0 +1,386 @@
+
+<div class="container py-4">
+
+    {{!-- 1. LỜI CHÀO --}}
+    <div class="mb-4">
+        <h2>Xin chào, {{user.fullName}}</h2>
+        <p class="text-muted">
+            Chào mừng bạn quay trở lại Todo App.
+        </p>
+    </div>
+
+
+    {{!-- 2. THỐNG KÊ CÔNG VIỆC --}}
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Tổng công việc</h6>
+                    <h3>{{totalTasks}}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Chưa thực hiện</h6>
+                    <h3>{{pendingTasks}}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Đang thực hiện</h6>
+                    <h3>{{inProgressTasks}}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Đã hoàn thành</h6>
+                    <h3>{{completedTasks}}</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    {{!-- 3. TIÊU ĐỀ VÀ NÚT THÊM TASK --}}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Danh sách công việc</h4>
+
+        <a href="/tasks/create" class="btn btn-primary">
+            + Thêm công việc
+        </a>
+    </div>
+
+
+    {{!-- 4. FORM TÌM KIẾM VÀ LỌC --}}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <form action="/home" method="GET">
+
+                <div class="row g-3 align-items-end">
+
+                    {{!-- Tìm kiếm --}}
+                    <div class="col-12 col-lg-5">
+                        <label class="form-label">
+                            Tìm kiếm công việc
+                        </label>
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Nhập tên công việc cần tìm..."
+                            value="{{search}}"
+                        >
+                    </div>
+
+
+                    {{!-- Trạng thái --}}
+                    <div class="col-12 col-md-6 col-lg-2">
+                        <label class="form-label">
+                            Trạng thái
+                        </label>
+
+                        <select name="status" class="form-select">
+                            <option value="">Tất cả</option>
+
+                            <option value="pending"
+                                {{#if statusPending}}selected{{/if}}>
+                                Chưa thực hiện
+                            </option>
+
+                            <option value="in_progress"
+                                {{#if statusInProgress}}selected{{/if}}>
+                                Đang thực hiện
+                            </option>
+
+                            <option value="completed"
+                                {{#if statusCompleted}}selected{{/if}}>
+                                Đã hoàn thành
+                            </option>
+                        </select>
+                    </div>
+
+
+                    {{!-- Ưu tiên --}}
+                    <div class="col-12 col-md-6 col-lg-2">
+                        <label class="form-label">
+                            Mức độ ưu tiên
+                        </label>
+
+                        <select name="priority" class="form-select">
+                            <option value="">Tất cả</option>
+
+                            <option value="low"
+                                {{#if priorityLow}}selected{{/if}}>
+                                Thấp
+                            </option>
+
+                            <option value="medium"
+                                {{#if priorityMedium}}selected{{/if}}>
+                                Trung bình
+                            </option>
+
+                            <option value="high"
+                                {{#if priorityHigh}}selected{{/if}}>
+                                Cao
+                            </option>
+                        </select>
+                    </div>
+
+
+                    {{!-- Nút thao tác --}}
+                    <div class="col-12 col-lg-3">
+                        <div class="d-flex gap-2">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary flex-grow-1"
+                            >
+                                Lọc
+                            </button>
+
+                            <a
+                                href="/home"
+                                class="btn btn-outline-secondary"
+                            >
+                                Xóa lọc
+                            </a>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+
+    {{!-- 5. BẢNG DANH SÁCH TASK --}}
+    {{#if tasks.length}}
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Tiêu đề</th>
+                        <th>Mô tả</th>
+                        <th>Trạng thái</th>
+                        <th>Ưu tiên</th>
+                        <th>Ngày hết hạn</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {{#each tasks}}
+
+                        <tr>
+
+                            {{!-- Tiêu đề --}}
+                            <td>
+                                <strong>{{this.title}}</strong>
+                            </td>
+
+
+                            {{!-- Mô tả --}}
+                            <td>
+                                {{this.description}}
+                            </td>
+
+
+                            {{!-- Trạng thái --}}
+                            <td>
+
+                                {{#if (eq this.status "pending")}}
+                                    <span class="badge bg-secondary">
+                                        Chưa thực hiện
+                                    </span>
+
+                                {{else if (eq this.status "in_progress")}}
+                                    <span class="badge bg-warning text-dark">
+                                        Đang thực hiện
+                                    </span>
+
+                                {{else if (eq this.status "completed")}}
+                                    <span class="badge bg-success">
+                                        Đã hoàn thành
+                                    </span>
+                                {{/if}}
+
+                            </td>
+
+
+                            {{!-- Mức độ ưu tiên --}}
+                            <td>
+
+                                {{#if (eq this.priority "low")}}
+                                    <span class="badge bg-info text-dark">
+                                        Thấp
+                                    </span>
+
+                                {{else if (eq this.priority "medium")}}
+                                    <span class="badge bg-warning text-dark">
+                                        Trung bình
+                                    </span>
+
+                                {{else if (eq this.priority "high")}}
+                                    <span class="badge bg-danger">
+                                        Cao
+                                    </span>
+                                {{/if}}
+
+                            </td>
+
+
+                            {{!-- Ngày hết hạn --}}
+                            <td>
+                                {{#if this.dueDate}}
+                                    {{this.dueDate}}
+                                {{else}}
+                                    <span class="text-muted">
+                                        Không có
+                                    </span>
+                                {{/if}}
+                            </td>
+
+
+                            {{!-- Thao tác --}}
+                            <td class="text-nowrap">
+
+                                <a
+                                    href="/tasks/{{this._id}}/edit"
+                                    class="btn btn-warning btn-sm"
+                                >
+                                    Sửa
+                                </a>
+
+                                <form
+                                    action="/tasks/{{this._id}}?_method=DELETE"
+                                    method="POST"
+                                    class="d-inline"
+                                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa công việc này?')"
+                                >
+                                    <button
+                                        type="submit"
+                                        class="btn btn-danger btn-sm"
+                                    >
+                                        Xóa
+                                    </button>
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                    {{/each}}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        {{!-- 6. THÔNG TIN PHÂN TRANG --}}
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+
+            <div class="text-muted">
+                Trang {{currentPage}} / {{totalPages}}
+                <span class="mx-1">|</span>
+                Tổng {{totalFilteredTasks}} công việc
+            </div>
+
+
+            {{!-- 7. PHÂN TRANG --}}
+            {{#if (gt totalPages 1)}}
+
+                <nav aria-label="Pagination">
+
+                    <ul class="pagination mb-0">
+
+                        {{!-- Trang trước --}}
+                        {{#if hasPreviousPage}}
+                            <li class="page-item">
+                                <a class="page-link" href="{{previousUrl}}">
+                                    Trước
+                                </a>
+                            </li>
+                        {{else}}
+                            <li class="page-item disabled">
+                                <span class="page-link">Trước</span>
+                            </li>
+                        {{/if}}
+
+
+                        {{!-- Các số trang --}}
+                        {{#each pages}}
+
+                            <li class="page-item {{#if this.active}}active{{/if}}">
+                                <a class="page-link" href="{{this.url}}">
+                                    {{this.number}}
+                                </a>
+                            </li>
+
+                        {{/each}}
+
+
+                        {{!-- Trang sau --}}
+                        {{#if hasNextPage}}
+                            <li class="page-item">
+                                <a class="page-link" href="{{nextUrl}}">
+                                    Sau
+                                </a>
+                            </li>
+                        {{else}}
+                            <li class="page-item disabled">
+                                <span class="page-link">Sau</span>
+                            </li>
+                        {{/if}}
+
+                    </ul>
+
+                </nav>
+
+            {{/if}}
+
+        </div>
+
+
+    {{else}}
+
+        {{!-- 8. KHÔNG CÓ TASK --}}
+        {{#if hasFilter}}
+
+            <div class="alert alert-warning">
+                Không tìm thấy công việc phù hợp với điều kiện tìm kiếm.
+            </div>
+
+        {{else}}
+
+            <div class="alert alert-info">
+                Bạn chưa có công việc nào.
+                Hãy thêm công việc đầu tiên nhé!
+            </div>
+
+        {{/if}}
+
+    {{/if}}
+
+</div>

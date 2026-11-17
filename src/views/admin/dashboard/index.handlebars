@@ -1,0 +1,241 @@
+
+<div class="container-fluid py-4">
+
+    <h2 class="mb-4">Admin Dashboard</h2>
+
+    <p class="text-muted">
+        Xin chào Admin {{user.username}}!
+    </p>
+
+    {{!-- THỐNG KÊ TỔNG QUAN --}}
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Tổng người dùng</h6>
+                    <h3>{{totalUsers}}</h3>
+                </div>
+            </div>
+        </div>
+
+{{!--         <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Tổng công việc</h6>
+                    <h3>{{totalTasks}}</h3>
+                </div>
+            </div>
+        </div> --}}
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Tài khoản hoạt động</h6>
+                    <h3>{{activeUsers}}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Tài khoản bị khóa</h6>
+                    <h3>{{lockedUsers}}</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {{!-- QUẢN LÝ NGƯỜI DÙNG --}}
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">Quản lý người dùng</h5>
+        </div>
+
+        <div class="card-body">
+
+            {{!-- TÌM KIẾM --}}
+            <form action="/admin/dashboard" method="GET" class="mb-3">
+                <div class="row g-2">
+
+                    <div class="col-md-6">
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Tìm theo username hoặc email..."
+                            value="{{search}}"
+                        >
+                    </div>
+
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                            Tìm kiếm
+                        </button>
+                    </div>
+
+                    <div class="col-auto">
+                        <a href="/admin/dashboard" class="btn btn-secondary">
+                            Làm mới
+                        </a>
+                    </div>
+
+                </div>
+            </form>
+
+            {{!-- BẢNG NGƯỜI DÙNG --}}
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th style="width: 160px;">Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {{#each users}}
+
+                            <tr>
+                                <td>{{this.username}}</td>
+                                <td>{{this.email}}</td>
+                                <td>{{this.role}}</td>
+
+                                <td>
+                                    {{#if this.isLocked}}
+                                        <span class="badge bg-danger">Locked</span>
+                                    {{else}}
+                                        <span class="badge bg-success">Active</span>
+                                    {{/if}}
+                                </td>
+
+                                <td>
+                                    {{#if this.canToggleLock}}
+
+                                        <form
+                                            action="/admin/users/{{this._id}}/toggle-lock"
+                                            method="POST"
+                                            onsubmit="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái tài khoản này?')"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="search"
+                                                value="{{../search}}"
+                                            >
+
+                                            <input
+                                                type="hidden"
+                                                name="page"
+                                                value="{{../currentPage}}"
+                                            >
+
+                                            {{#if this.isLocked}}
+                                                <button type="submit" class="btn btn-success btn-sm">
+                                                    <i class="fas fa-unlock"></i>
+                                                    Mở khóa
+                                                </button>
+                                            {{else}}
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-lock"></i>
+                                                    Khóa
+                                                </button>
+                                            {{/if}}
+
+                                        </form>
+
+                                    {{else}}
+
+                                        <span class="text-muted">Không thể khóa</span>
+
+                                    {{/if}}
+                                </td>
+                            </tr>
+
+                        {{else}}
+
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    Không tìm thấy người dùng.
+                                </td>
+                            </tr>
+
+                        {{/each}}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {{!-- THÔNG TIN PHÂN TRANG --}}
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                <div class="text-muted">
+                    Trang {{currentPage}} / {{totalPages}}
+                    - Tổng {{filteredUsersCount}} người dùng
+                </div>
+
+                {{!-- PHÂN TRANG --}}
+                <nav>
+                    <ul class="pagination mb-0">
+
+                        {{#if hasPrevPage}}
+                            <li class="page-item">
+                                <a
+                                    class="page-link"
+                                    href="/admin/dashboard?page={{prevPage}}&search={{search}}"
+                                >
+                                    Trước
+                                </a>
+                            </li>
+                        {{else}}
+                            <li class="page-item disabled">
+                                <span class="page-link">Trước</span>
+                            </li>
+                        {{/if}}
+
+                        {{#each pages}}
+                            <li class="page-item {{#if this.isCurrent}}active{{/if}}">
+                                <a
+                                    class="page-link"
+                                    href="/admin/dashboard?page={{this.number}}&search={{../search}}"
+                                >
+                                    {{this.number}}
+                                </a>
+                            </li>
+                        {{/each}}
+
+                        {{#if hasNextPage}}
+                            <li class="page-item">
+                                <a
+                                    class="page-link"
+                                    href="/admin/dashboard?page={{nextPage}}&search={{search}}"
+                                >
+                                    Sau
+                                </a>
+                            </li>
+                        {{else}}
+                            <li class="page-item disabled">
+                                <span class="page-link">Sau</span>
+                            </li>
+                        {{/if}}
+
+                    </ul>
+                </nav>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
